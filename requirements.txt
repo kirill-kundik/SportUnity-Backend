@@ -3,5 +3,4 @@ aiopg==1.0.0
 trafaret==2.0.2
 trafaret-config==2.0.2
 aiohttp==3.6.2
-couchbase==3.0.0b3
 elasticsearch-async==6.2.0

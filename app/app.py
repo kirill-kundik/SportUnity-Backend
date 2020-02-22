@@ -8,6 +8,7 @@ from app.postgres.utils import close_pg, init_pg
 from app.routes import setup_routes
 from app.utils import get_config
 from app.elastic.utils import close_es, init_es
+from app.couchbase.utils import init_cb
 
 
 async def init_app(argv=None):
@@ -18,6 +19,7 @@ async def init_app(argv=None):
     # create db connection on startup, shutdown on exit
     app.on_startup.append(init_pg)
     app.on_startup.append(init_es)
+    app.on_startup.append(init_cb)
     app.on_cleanup.append(close_es)
     app.on_cleanup.append(close_pg)
 

@@ -50,7 +50,6 @@ def teardown_db(config):
 
 def create_tables(engine):
     meta = MetaData()
-    print(admin)
     meta.create_all(bind=engine,
                     tables=[admin])
 
