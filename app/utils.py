@@ -36,3 +36,9 @@ def get_config(argv=None):
 
     config = commandline.config_from_options(options, TRAFARET)
     return config
+
+
+def setup_routes(app):
+    routes = []  # [IndexRouter()]
+    for route in routes:
+        route.configure(app)

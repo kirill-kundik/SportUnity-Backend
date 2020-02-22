@@ -51,39 +51,41 @@ def teardown_db(config):
 def create_tables(engine):
     meta = MetaData()
     meta.create_all(bind=engine,
-                    tables=[admin])
+                    tables=[user, activity, type_, user_to_type, point])
 
 
 def drop_tables(engine):
     meta = MetaData()
     meta.drop_all(bind=engine,
-                  tables=[admin])
+                  tables=[user, activity, type_, user_to_type, point])
 
 
 def sample_data(engine):
     conn = engine.connect()
-    conn.execute(admin.insert(), [
-        {'email': 'admin@admin.com',
-         'pass_hash': '$5$rounds=535000$hYkOykAwtwdNpZbd$N04R0fNDHWtpkGiGcIRVeg4ARkcwbhJCFDQYcgPnBOC'}
-    ])
-    # TODO insert basic info while initialize db
-    # conn.execute(question.insert(), [
-    #     {'question_text': 'What\'s new?',
-    #      'pub_date': '2015-12-15 17:17:49.629+02'}
-    # ])
-    # conn.execute(choice.insert(), [
-    #     {'choice_text': 'Not much', 'votes': 0, 'question_id': 1},
-    #     {'choice_text': 'The sky', 'votes': 0, 'question_id': 1},
-    #     {'choice_text': 'Just hacking again', 'votes': 0, 'question_id': 1},
-    # ])
+    conn.execute(
+        type_.insert(), [
+            {"name": "cycling", "recent_loc_count": 5, "image_url": ""},
+            {"name": "running", "recent_loc_count": 5, "image_url": ""},
+            {"name": "trekking", "recent_loc_count": 5, "image_url": ""},
+            {"name": "skating", "recent_loc_count": 5, "image_url": ""},
+            {"name": "gym", "recent_loc_count": 1, "image_url": ""},
+            {"name": "walking", "recent_loc_count": 3, "image_url": ""},
+        ]
+    )
+    conn.execute(
+        user.insert(), [
+            {"email": "kkk@gmail.com", "name": "Kirill Kirill", "description": "Long distance runner",
+             "image_url": "https://i.imgur.com/UXOBdLU.jpg"}
+        ]
+    )
     conn.close()
 
 
 def init_db():
     # setup_db(USER_CONFIG['postgres'])
+    drop_tables(engine=user_engine)  # TODO: remember it
     create_tables(engine=user_engine)
     sample_data(engine=user_engine)
-    # drop_tables()
     # teardown_db(config)
 
 

@@ -5,10 +5,9 @@ from aiohttp import web
 
 from app.postgres.db_init import init_db
 from app.postgres.utils import close_pg, init_pg
-from app.routes import setup_routes
-from app.utils import get_config
+from app.utils import get_config, setup_routes
 from app.elastic.utils import close_es, init_es
-from app.couchbase.utils import init_cb
+from app.couchbase.utils import init_cb, close_cb
 
 
 async def init_app(argv=None):
@@ -22,6 +21,7 @@ async def init_app(argv=None):
     app.on_startup.append(init_cb)
     app.on_cleanup.append(close_es)
     app.on_cleanup.append(close_pg)
+    app.on_cleanup.append(close_cb)
 
     # setup routes
     setup_routes(app)
