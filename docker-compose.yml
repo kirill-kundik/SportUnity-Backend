@@ -1,0 +1,83 @@
+version: '3'
+services:
+  postgres:
+    container_name: int20h_postgres
+    image: postgres:9.6
+    environment:
+      POSTGRES_DB: $PG_DB
+      POSTGRES_PASSWORD: $PG_PASS
+      POSTGRES_USER: $PG_USER
+    ports:
+      - $PG_EXTERNAL_PORT:$PG_PORT
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  web:
+    build: .
+    container_name: int20h_web
+    command: python3 -m app
+    ports:
+      - $APP_PORT:$APP_PORT
+    volumes:
+      - .:/int20h # will be removed soon (fast reloading)
+    links:
+      - postgres
+      - es01
+    #    restart: always
+    depends_on:
+      - postgres
+      - es01
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.0.0
+    container_name: int20h_es01
+    environment:
+      - node.name=es01
+      - discovery.seed_hosts=es02
+      - cluster.initial_master_nodes=es01,es02
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata01:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+  es02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.0.0
+    container_name: int20h_es02
+    environment:
+      - node.name=es02
+      - discovery.seed_hosts=es01
+      - cluster.initial_master_nodes=es01,es02
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata02:/usr/share/elasticsearch/data
+  couchbase:
+    container_name: int20h_couchbase
+    image: arungupta/couchbase
+    deploy:
+      replicas: 1
+    ports:
+      - 8091:8091
+      - 8092:8092
+      - 8093:8093
+      - 8094:8094
+      - 11210:11210
+
+volumes:
+  esdata01:
+    driver: local
+  esdata02:
+    driver: local
