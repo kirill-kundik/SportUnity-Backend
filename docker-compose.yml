@@ -67,8 +67,8 @@ services:
   couchbase:
     container_name: int20h_couchbase
     image: arungupta/couchbase
-    deploy:
-      replicas: 1
+#    deploy:
+#      replicas: 1
     ports:
       - 8091:8091
       - 8092:8092
