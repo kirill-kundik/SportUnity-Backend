@@ -26,7 +26,7 @@ async def track(request):
     # cb = request.app["cb"]
     # await couchbase.insert(cb, f"{activity.id}-{int(time.time())}", long, lat)
 
-    return aiohttp.web.HTTPOk
+    return aiohttp.web.HTTPOk()
 
 
 async def start_by_activity(request):
@@ -34,22 +34,29 @@ async def start_by_activity(request):
         body = await request.json()
 
         activity_id = body["activityId"]
-        user_id = body["userId"]
+        _user_id = body["userId"]
     except:
         raise aiohttp.web.HTTPBadRequest()
 
     async with request.app['db'].acquire() as conn:
-        activity = await db.get_activity(conn, user_id)
+        activity = await db.get_activity(conn, activity_id)
 
         if not activity:
             raise aiohttp.web.HTTPBadRequest()
 
-        await db.add_point(conn, long, lat, activity.id)
+        await db.update_activity(
+            conn,
+            activity_id,
+            activity.name,
+            db.ActivityStatus.ACTIVE,
+            activity.expected_start,
+            datetime.datetime.now(),
+            None,
+            activity.description,
+            activity.type_fk
+        )
 
-    # cb = request.app["cb"]
-    # await couchbase.insert(cb, f"{activity.id}-{int(time.time())}", long, lat)
-
-    return aiohttp.web.HTTPOk
+    return aiohttp.web.HTTPOk()
 
 
 async def start_by_type(request):
@@ -144,8 +151,26 @@ async def get_activity(request):
 
 
 async def get_nearby(request):
+    response = []
+
     async with request.app["db"].acquire() as conn:
-        pass
+        all_active = await db.get_all_active(conn)
+        for active in all_active:
+            type_ = await db.get_type(conn, active.type_fk)
+
+            locations = await db.get_points(conn, active.id, type_.recent_loc_count)
+
+            response.append({
+                "user_id": active.user_fk,
+                "color": type_.color,
+                "image_url": type_.image_url,
+                "locations": [
+                    {"lat": loc.lat, "lon": loc.long}
+                    for loc in locations
+                ],
+            })
+
+    return aiohttp.web.json_response(response)
 
 
 def configure(app):
@@ -154,6 +179,7 @@ def configure(app):
     router.add_route('POST', '/track', track, name='track')
     router.add_route('POST', '/activity', add_activity, name='activity')
     router.add_route('POST', '/startTrackType', start_by_type, name='start_by_type')
+    router.add_route('POST', '/startTrackActivity', start_by_activity, name='start_by_activity')
     router.add_route('POST', '/copyActivity/{id}', copy_activity, name='copy_activity')
     router.add_route('GET', '/activity/{id}', get_activity, name='get_activity')
     router.add_route('GET', '/getNearby', get_nearby, name='get_nearby')

@@ -14,10 +14,6 @@ async def add_activity(conn, name, status, expected_start, start_time, end_time,
     ))
 
 
-async def update_activity(conn, type_id, user_id):
-    await conn.execute(activity.insert().values(type_fk=type_id, user_fk=user_id))
-
-
 async def add_point(conn, long, lat, activity_fk):
     await conn.execute(point.insert().values(long, lat, activity_fk))
 
@@ -66,5 +62,28 @@ async def get_user_types(conn, user_id):
 
 async def get_all_active(conn):
     res = await conn.execute(
-        activity.select()
+        activity.select().where(activity.c.status == ActivityStatus.ACTIVE)
     )
+    return await res.fetchall()
+
+
+async def update_activity(conn, activity_id, name, status, expected_start, start_time, end_time, description, type_fk):
+    await conn.execute(
+        activity.update().where(activity.c.id == activity_id).values(
+            name=name,
+            status=status,
+            expected_start=expected_start,
+            start_time=start_time,
+            end_time=end_time,
+            description=description,
+            type_fk=type_fk,
+        )
+    )
+
+
+async def get_points(conn, activity_id, limit=None):
+    stmt = point.select().where(point.c.activity_fk == activity_id).order_by(point.c.id.desc())
+    if limit:
+        stmt = stmt.limit(limit)
+    res = await conn.execute(stmt)
+    return await res.fetchall()
