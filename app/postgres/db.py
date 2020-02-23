@@ -1,10 +1,11 @@
+import datetime
 import enum
 
 from sqlalchemy import (
     MetaData, Table, Column, Integer, String, Enum, DateTime, ForeignKey, PrimaryKeyConstraint
 )
 
-__all__ = ['user', 'type_', 'activity', 'point', 'user_to_type', 'ActivityStatus']
+__all__ = ['user', 'type_', 'activity', 'point', 'user_to_type', 'followers', 'ActivityStatus']
 
 meta = MetaData()
 
@@ -66,4 +67,13 @@ user_to_type = Table(
     Column('user_fk', Integer, ForeignKey('user.id', onupdate='cascade', ondelete='cascade')),
     Column('type_fk', Integer, ForeignKey('type_.id', ondelete='restrict', onupdate='cascade')),
     PrimaryKeyConstraint('user_fk', 'type_fk', name='user_to_type_pk')
+)
+
+followers = Table(
+    'followers', meta,
+
+    Column('user_fk', Integer, ForeignKey('user.id', onupdate='cascade', ondelete='cascade')),
+    Column('following', Integer, ForeignKey('user.id', onupdate='cascade', ondelete='cascade')),
+    Column('followed_at', DateTime, default=datetime.datetime.now()),
+    PrimaryKeyConstraint('user_fk', 'following', name='followers_pk'),
 )

@@ -51,24 +51,28 @@ def teardown_db(config):
 def create_tables(engine):
     meta = MetaData()
     meta.create_all(bind=engine,
-                    tables=[user, activity, type_, user_to_type, point])
+                    tables=[user, activity, type_, user_to_type, point, followers])
 
 
 def drop_tables(engine):
     meta = MetaData()
     meta.drop_all(bind=engine,
-                  tables=[user, activity, type_, user_to_type, point])
+                  tables=[user, activity, type_, user_to_type, point, followers])
 
 
 def sample_data(engine):
     conn = engine.connect()
     conn.execute(
         type_.insert(), [
-            {"name": "cycling", "recent_loc_count": 5, "image_url": "https://i.imgur.com/hC2DYiO.png", "color": "#32a852"},
-            {"name": "running", "recent_loc_count": 5, "image_url": "https://i.imgur.com/tByCzf4.png", "color": "#fca800"},
-            {"name": "skating", "recent_loc_count": 5, "image_url": "https://i.imgur.com/EqWIdaB.png", "color": "#8a8886"},
+            {"name": "cycling", "recent_loc_count": 5, "image_url": "https://i.imgur.com/hC2DYiO.png",
+             "color": "#32a852"},
+            {"name": "running", "recent_loc_count": 5, "image_url": "https://i.imgur.com/tByCzf4.png",
+             "color": "#fca800"},
+            {"name": "skating", "recent_loc_count": 5, "image_url": "https://i.imgur.com/EqWIdaB.png",
+             "color": "#8a8886"},
             {"name": "gym", "recent_loc_count": 1, "image_url": "https://i.imgur.com/ge3CT7P.png", "color": "#369ed1"},
-            {"name": "skateboarding", "recent_loc_count": 3, "image_url": "https://i.imgur.com/6nOuojX.png", "color": "#9e6242"},
+            {"name": "skateboarding", "recent_loc_count": 3, "image_url": "https://i.imgur.com/6nOuojX.png",
+             "color": "#9e6242"},
         ]
     )
     conn.execute(

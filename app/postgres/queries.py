@@ -92,3 +92,7 @@ async def get_points(conn, activity_id, limit=None):
 async def get_user_activities(conn, user_id):
     res = await conn.execute(activity.select().where(activity.c.user_fk == user_id))
     return await res.fetchall()
+
+
+async def add_followers(conn, user_fk, following):
+    await conn.execute(followers.insert().values(user_fk=user_fk, following=following))

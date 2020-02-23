@@ -35,7 +35,23 @@ async def get_user(request):
     )
 
 
+async def follow(request):
+    try:
+        body = await request.json()
+
+        user_id = body["userId"]
+        following_id = body["followingId"]
+    except:
+        raise aiohttp.web.HTTPBadRequest()
+
+    async with request.app["db"].acquire() as conn:
+        await db.add_followers(conn, user_id, following_id)
+
+    return aiohttp.web.HTTPOk()
+
+
 def configure(app):
     router = app.router
 
     router.add_route('GET', '/user/{id}', get_user, name="get_user")
+    router.add_route('POST', '/follow', follow, name="follow")
