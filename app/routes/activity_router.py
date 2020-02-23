@@ -66,8 +66,10 @@ async def start_by_type(request):
         raise aiohttp.web.HTTPBadRequest()
 
     async with request.app["db"].acquire() as conn:
+        type_ = await db.get_type(conn, type_id)
         await db.add_activity(
-            conn, None, db.ActivityStatus.ACTIVE, None, datetime.datetime.now(), None, None, user_id, type_id
+            conn, f"Activity - {type_.name}", db.ActivityStatus.ACTIVE, None, datetime.datetime.now(), None,
+            "Created automatically when you started your activity", user_id, type_id
         )
 
     return aiohttp.web.HTTPOk()
