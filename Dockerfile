@@ -1,5 +1,3 @@
-FROM arungupta/couchbase
-
 FROM python:3.7.3
 
 EXPOSE 8088
