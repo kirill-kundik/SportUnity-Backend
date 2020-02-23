@@ -212,10 +212,10 @@ async def check_activity(request):
         activity = await db.get_user_active(conn, user_id)
 
         if not activity:
-            raise aiohttp.web.json_response({
+            return aiohttp.web.json_response({
                 "da": False,
             })
-        raise aiohttp.web.json_response({
+        return aiohttp.web.json_response({
             "da": True,
         })
 
