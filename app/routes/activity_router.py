@@ -139,7 +139,7 @@ async def get_activity(request):
             "status": activity.status.name,
             "expected_start": datetime.datetime.isoformat(activity.expected_start) if activity.expected_start else None,
             "start_time": datetime.datetime.isoformat(activity.start_time) if activity.start_time else None,
-            "finish_time": datetime.datetime.isoformat(activity.finish_time) if activity.finish_time else None,
+            "end_time": datetime.datetime.isoformat(activity.end_time) if activity.end_time else None,
             "description": activity.description,
             "user_id": activity.user_fk,
             "type_id": activity.type_fk,
@@ -235,7 +235,7 @@ async def user_activities(request):
                 "expected_start": datetime.datetime.isoformat(
                     active.expected_start) if active.expected_start else None,
                 "start_time": datetime.datetime.isoformat(active.start_time) if active.start_time else None,
-                "finish_time": datetime.datetime.isoformat(active.finish_time) if active.finish_time else None,
+                "end_time": datetime.datetime.isoformat(active.end_time) if active.end_time else None,
                 "description": active.description,
                 "type": {
                     "id": type_.id,
