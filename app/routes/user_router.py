@@ -43,6 +43,10 @@ async def follow(request):
 
         user_id = body["userId"]
         following_id = body["followingId"]
+
+        if user_id == following_id:
+            raise Exception
+
     except:
         raise aiohttp.web.HTTPBadRequest()
 
