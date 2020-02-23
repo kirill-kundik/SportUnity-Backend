@@ -8,10 +8,7 @@ import app.postgres.queries as db
 async def track(request):
     try:
         body = await request.json()
-
-        long = body["lon"]
-        lat = body["lat"]
-        user_id = body["userId"]
+        user_id = body[0]["userId"]
     except:
         raise aiohttp.web.HTTPBadRequest()
 
@@ -20,8 +17,8 @@ async def track(request):
 
         if not activity:
             raise aiohttp.web.HTTPBadRequest()
-
-        await db.add_point(conn, long, lat, activity.id)
+        for item in body:
+            await db.add_point(conn, item["lon"], item["lat"], activity.id)
 
     # cb = request.app["cb"]
     # await couchbase.insert(cb, f"{activity.id}-{int(time.time())}", long, lat)
