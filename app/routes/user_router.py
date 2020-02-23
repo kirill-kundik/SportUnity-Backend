@@ -128,7 +128,7 @@ async def feed(request):
                 response.append({"timestamp": event.start_time, "status": "started", **event_obj})
             if event.end_time:
                 response.append({"timestamp": event.end_time, "status": "finished", **event_obj})
-        response.sort(key=lambda item: item["timestamp"])
+        response.sort(key=lambda i: i["timestamp"], reverse=True)
 
         for item in response:
             item["timestamp"] = datetime.datetime.isoformat(item["timestamp"])
