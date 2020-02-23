@@ -232,9 +232,10 @@ async def user_activities(request):
                 "id": active.id,
                 "name": active.name,
                 "status": active.status.name,
-                "expected_start": active.expected_start,
-                "start_time": active.start_time,
-                "end_time": active.end_time,
+                "expected_start": datetime.datetime.isoformat(
+                    active.expected_start) if active.expected_start else None,
+                "start_time": datetime.datetime.isoformat(active.start_time) if active.start_time else None,
+                "finish_time": datetime.datetime.isoformat(active.finish_time) if active.finish_time else None,
                 "description": active.description,
                 "type": {
                     "id": type_.id,
