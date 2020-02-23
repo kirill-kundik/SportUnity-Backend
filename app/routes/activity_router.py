@@ -173,6 +173,84 @@ async def get_nearby(request):
     return aiohttp.web.json_response(response)
 
 
+async def end_activity(request):
+    try:
+        body = await request.json()
+
+        user_id = body["userId"]
+    except:
+        raise aiohttp.web.HTTPBadRequest()
+
+    async with request.app['db'].acquire() as conn:
+        activity = await db.get_user_active(conn, user_id)
+
+        if not activity:
+            raise aiohttp.web.HTTPBadRequest()
+
+        await db.update_activity(
+            conn,
+            activity.id,
+            activity.name,
+            db.ActivityStatus.FINISHED,
+            activity.expected_start,
+            activity.start_time,
+            datetime.datetime.now(),
+            activity.description,
+            activity.type_fk
+        )
+
+    return aiohttp.web.HTTPOk()
+
+
+async def check_activity(request):
+    try:
+        user_id = request.match_info["id"]
+    except:
+        raise aiohttp.web.HTTPBadRequest()
+
+    async with request.app['db'].acquire() as conn:
+        activity = await db.get_user_active(conn, user_id)
+
+        if not activity:
+            raise aiohttp.web.json_response({
+                "da": False,
+            })
+        raise aiohttp.web.json_response({
+            "da": True,
+        })
+
+
+async def user_activities(request):
+    try:
+        user_id = request.match_info["id"]
+    except:
+        raise aiohttp.web.HTTPBadRequest()
+    response = []
+    async with request.app['db'].acquire() as conn:
+        activities = await db.get_user_activities(conn, user_id)
+
+        for active in activities:
+            type_ = await db.get_type(conn, active.type_fk)
+            response.append({
+                "id": active.id,
+                "name": active.name,
+                "status": active.status.name,
+                "expected_start": active.expected_start,
+                "start_time": active.start_time,
+                "end_time": active.end_time,
+                "description": active.description,
+                "type": {
+                    "id": type_.id,
+                    "name": type_.name,
+                    "recent_loc_count": type_.recent_loc_count,
+                    "image_url": type_.image_url,
+                    "color": type_.color,
+                }
+            })
+
+    return aiohttp.web.json_response(response)
+
+
 def configure(app):
     router = app.router
 
@@ -183,3 +261,6 @@ def configure(app):
     router.add_route('POST', '/copyActivity/{id}', copy_activity, name='copy_activity')
     router.add_route('GET', '/activity/{id}', get_activity, name='get_activity')
     router.add_route('GET', '/getNearby', get_nearby, name='get_nearby')
+    router.add_route('POST', '/stopTrack', end_activity, name='end_activity')
+    router.add_route('GET', '/check/{id}', check_activity, name='check_activity')
+    router.add_route('GET', '/activities/{id}', user_activities, name='user_activities')

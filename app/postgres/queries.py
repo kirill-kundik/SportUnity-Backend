@@ -87,3 +87,8 @@ async def get_points(conn, activity_id, limit=None):
         stmt = stmt.limit(limit)
     res = await conn.execute(stmt)
     return await res.fetchall()
+
+
+async def get_user_activities(conn, user_id):
+    res = await conn.execute(activity.select().where(activity.c.user_fk == user_id))
+    return await res.fetchall()
