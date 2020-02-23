@@ -64,11 +64,11 @@ def sample_data(engine):
     conn = engine.connect()
     conn.execute(
         type_.insert(), [
-            {"name": "cycling", "recent_loc_count": 5, "image_url": "https://imgur.com/hC2DYiO", "color": "#32a852"},
-            {"name": "running", "recent_loc_count": 5, "image_url": "https://imgur.com/tByCzf4", "color": "#fca800"},
-            {"name": "skating", "recent_loc_count": 5, "image_url": "https://imgur.com/EqWIdaB", "color": "#8a8886"},
-            {"name": "gym", "recent_loc_count": 1, "image_url": "https://imgur.com/ge3CT7P", "color": "#369ed1"},
-            {"name": "skateboarding", "recent_loc_count": 3, "image_url": "https://imgur.com/6nOuojX", "color": "#9e6242"},
+            {"name": "cycling", "recent_loc_count": 5, "image_url": "https://i.imgur.com/hC2DYiO.png", "color": "#32a852"},
+            {"name": "running", "recent_loc_count": 5, "image_url": "https://i.imgur.com/tByCzf4.png", "color": "#fca800"},
+            {"name": "skating", "recent_loc_count": 5, "image_url": "https://i.imgur.com/EqWIdaB.png", "color": "#8a8886"},
+            {"name": "gym", "recent_loc_count": 1, "image_url": "https://i.imgur.com/ge3CT7P.png", "color": "#369ed1"},
+            {"name": "skateboarding", "recent_loc_count": 3, "image_url": "https://i.imgur.com/6nOuojX.png", "color": "#9e6242"},
         ]
     )
     conn.execute(

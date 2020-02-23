@@ -30,7 +30,26 @@ async def track(request):
 
 
 async def start_by_activity(request):
-    pass
+    try:
+        body = await request.json()
+
+        activity_id = body["activityId"]
+        user_id = body["userId"]
+    except:
+        raise aiohttp.web.HTTPBadRequest()
+
+    async with request.app['db'].acquire() as conn:
+        activity = await db.get_activity(conn, user_id)
+
+        if not activity:
+            raise aiohttp.web.HTTPBadRequest()
+
+        await db.add_point(conn, long, lat, activity.id)
+
+    # cb = request.app["cb"]
+    # await couchbase.insert(cb, f"{activity.id}-{int(time.time())}", long, lat)
+
+    return aiohttp.web.HTTPOk
 
 
 async def start_by_type(request):
