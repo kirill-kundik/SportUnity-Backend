@@ -8,6 +8,7 @@ import app.postgres.queries as db
 async def track(request):
     try:
         body = await request.json()
+        print(body)
         user_id = body[0]["userId"]
     except:
         raise aiohttp.web.HTTPBadRequest()
