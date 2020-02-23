@@ -62,3 +62,9 @@ async def get_user_types(conn, user_id):
     res = await res.fetchall()
 
     return [await get_type(conn, r.type_fk) for r in res]
+
+
+async def get_all_active(conn):
+    res = await conn.execute(
+        activity.select()
+    )

@@ -1,9 +1,7 @@
 import datetime
-import time
 
 import aiohttp.web
 
-import app.couchbase.queries as couchbase
 import app.postgres.queries as db
 
 
@@ -126,6 +124,11 @@ async def get_activity(request):
     )
 
 
+async def get_nearby(request):
+    async with request.app["db"].acquire() as conn:
+        pass
+
+
 def configure(app):
     router = app.router
 
@@ -134,3 +137,4 @@ def configure(app):
     router.add_route('POST', '/startTrackType', start_by_type, name='start_by_type')
     router.add_route('POST', '/copyActivity/{id}', copy_activity, name='copy_activity')
     router.add_route('GET', '/activity/{id}', get_activity, name='get_activity')
+    router.add_route('GET', '/getNearby', get_nearby, name='get_nearby')
