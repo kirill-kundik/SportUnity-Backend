@@ -79,14 +79,14 @@ async def feed(request):
                     "email": follower.email,
                     "name": follower.name,
                     "description": follower.description,
-                    "photo_url": follower.photo_url,
+                    "image_url": follower.photo_url,
                 },
                 "started_following": {
                     "id": started_following.id,
                     "email": started_following.email,
                     "name": started_following.name,
                     "description": started_following.description,
-                    "photo_url": started_following.photo_url,
+                    "image_url": started_following.photo_url,
                 }
             })
 
@@ -102,7 +102,7 @@ async def feed(request):
                     "email": user.email,
                     "name": user.name,
                     "description": user.description,
-                    "photo_url": user.photo_url,
+                    "image_url": user.photo_url,
                 },
                 "activity": {
                     "id": event.id,
@@ -150,7 +150,7 @@ async def get_all_users(request):
                     "name": user.name,
                     "email": user.email,
                     "description": user.description,
-                    "photo_url": user.photo_url,
+                    "image_url": user.photo_url,
                     "types": [{
                         "id": type_.id,
                         "name": type_.name,
