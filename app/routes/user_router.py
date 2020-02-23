@@ -13,6 +13,7 @@ async def get_user(request):
 
     async with request.app["db"].acquire() as conn:
         user = await db.get_user(conn, user_id)
+        activities_count = await db.get_user_activities_count(conn, user_id)
 
         if not user:
             raise aiohttp.web.HTTPBadRequest()
@@ -26,6 +27,7 @@ async def get_user(request):
             "email": user.email,
             "description": user.description,
             "photo_url": user.photo_url,
+            "activities_count": activities_count,
             "types": [{
                 "id": type_.id,
                 "name": type_.name,
@@ -147,6 +149,7 @@ async def get_all_users(request):
 
         for user in users:
             types = await db.get_user_types(conn, user.id)
+            activities_count = await db.get_user_activities_count(conn, user.id)
 
             response.append(
                 {
@@ -154,7 +157,9 @@ async def get_all_users(request):
                     "name": user.name,
                     "email": user.email,
                     "description": user.description,
+                    "photo_url": user.photo_url,
                     "image_url": user.photo_url,
+                    "activities_count": activities_count,
                     "types": [{
                         "id": type_.id,
                         "name": type_.name,

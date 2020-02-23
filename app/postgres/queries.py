@@ -131,3 +131,9 @@ async def get_all_activities(conn):
         activity.select()
     )
     return await res.fetchall()
+
+
+async def get_user_activities_count(conn, user_id):
+    return await conn.scalar(
+        activity.select().where(activity.c.user_fk == user_id).count()
+    )
