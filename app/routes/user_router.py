@@ -13,7 +13,7 @@ async def get_user(request):
         if not user:
             raise aiohttp.web.HTTPBadRequest()
 
-        types = await db.get_user_types(user.id)
+        types = await db.get_user_types(conn, user.id)
 
     return aiohttp.web.json_response(
         {
