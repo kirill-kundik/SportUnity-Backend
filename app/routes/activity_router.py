@@ -132,6 +132,8 @@ async def get_activity(request):
         if not activity:
             raise aiohttp.web.HTTPBadRequest()
 
+        type_ = await db.get_type(conn, activity.type_fk)
+
     return aiohttp.web.json_response(
         {
             "id": activity.id,
@@ -142,7 +144,13 @@ async def get_activity(request):
             "end_time": datetime.datetime.isoformat(activity.end_time) if activity.end_time else None,
             "description": activity.description,
             "user_id": activity.user_fk,
-            "type_id": activity.type_fk,
+            "type": {
+                    "id": type_.id,
+                    "name": type_.name,
+                    "recent_loc_count": type_.recent_loc_count,
+                    "image_url": type_.image_url,
+                    "color": type_.color,
+                }
         }
     )
 
