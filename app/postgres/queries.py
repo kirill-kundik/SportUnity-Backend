@@ -15,7 +15,7 @@ async def add_activity(conn, name, status, expected_start, start_time, end_time,
 
 
 async def add_point(conn, long, lat, activity_fk):
-    await conn.execute(point.insert().values(long, lat, activity_fk))
+    await conn.execute(point.insert().values(long=long, lat=lat, activity_fk=activity_fk))
 
 
 async def get_all_types(conn):
