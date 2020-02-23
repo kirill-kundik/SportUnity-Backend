@@ -1,3 +1,5 @@
+import aiohttp.web
+
 import app.postgres.queries as db
 
 
