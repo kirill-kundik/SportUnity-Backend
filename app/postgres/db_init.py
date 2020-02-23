@@ -64,18 +64,23 @@ def sample_data(engine):
     conn = engine.connect()
     conn.execute(
         type_.insert(), [
-            {"name": "cycling", "recent_loc_count": 5, "image_url": ""},
-            {"name": "running", "recent_loc_count": 5, "image_url": ""},
-            {"name": "trekking", "recent_loc_count": 5, "image_url": ""},
-            {"name": "skating", "recent_loc_count": 5, "image_url": ""},
-            {"name": "gym", "recent_loc_count": 1, "image_url": ""},
-            {"name": "walking", "recent_loc_count": 3, "image_url": ""},
+            {"name": "cycling", "recent_loc_count": 5, "image_url": "https://imgur.com/hC2DYiO", "color": "#32a852"},
+            {"name": "running", "recent_loc_count": 5, "image_url": "https://imgur.com/tByCzf4", "color": "#fca800"},
+            {"name": "skating", "recent_loc_count": 5, "image_url": "https://imgur.com/EqWIdaB", "color": "#8a8886"},
+            {"name": "gym", "recent_loc_count": 1, "image_url": "https://imgur.com/ge3CT7P", "color": "#369ed1"},
+            {"name": "skateboarding", "recent_loc_count": 3, "image_url": "https://imgur.com/6nOuojX", "color": "#9e6242"},
         ]
     )
     conn.execute(
         user.insert(), [
             {"email": "kkk@gmail.com", "name": "Kirill Kirill", "description": "Long distance runner",
-             "image_url": "https://i.imgur.com/UXOBdLU.jpg"}
+             "photo_url": "https://i.imgur.com/UXOBdLU.jpg"}
+        ]
+    )
+    conn.execute(
+        user_to_type.insert(), [
+            {"user_fk": 1, "type_fk": 1},
+            {"user_fk": 1, "type_fk": 2},
         ]
     )
     conn.close()

@@ -32,6 +32,7 @@ type_ = Table(
     Column('name', String),
     Column('recent_loc_count', Integer, default=5),
     Column('image_url', String),
+    Column('color', String),
 )
 
 activity = Table(

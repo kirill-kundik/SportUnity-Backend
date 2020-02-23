@@ -18,10 +18,10 @@ async def init_app(argv=None):
     # create db connection on startup, shutdown on exit
     app.on_startup.append(init_pg)
     app.on_startup.append(init_es)
-    app.on_startup.append(init_cb)
+    # app.on_startup.append(init_cb)
     app.on_cleanup.append(close_es)
     app.on_cleanup.append(close_pg)
-    app.on_cleanup.append(close_cb)
+    # app.on_cleanup.append(close_cb)
 
     # setup routes
     setup_routes(app)

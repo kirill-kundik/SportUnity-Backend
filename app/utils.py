@@ -5,6 +5,8 @@ from trafaret_config import commandline
 
 import trafaret as T
 
+from app.routes import type_router, activity_router, user_router
+
 TRAFARET = T.Dict({
     T.Key('postgres'):
         T.Dict({
@@ -39,6 +41,6 @@ def get_config(argv=None):
 
 
 def setup_routes(app):
-    routes = []  # [IndexRouter()]
+    routes = [type_router, activity_router, user_router]  # [IndexRouter()]
     for route in routes:
         route.configure(app)
