@@ -107,7 +107,7 @@ async def get_user_followers(conn, user_fk):
 
 async def get_all_followers_feed(conn, ids):
     res = await conn.execute(
-        followers.select().where(or_(followers.c.following == ids[0]), followers.c.user_fk.in_(ids))
+        followers.select().where(or_(followers.c.following == ids[0], followers.c.user_fk.in_(ids)))
     )
     return await res.fetchall()
 
