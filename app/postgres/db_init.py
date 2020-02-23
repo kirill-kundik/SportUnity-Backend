@@ -88,9 +88,9 @@ def sample_data(engine):
 
 def init_db():
     # setup_db(USER_CONFIG['postgres'])
-    drop_tables(engine=user_engine)  # TODO: remember it
+    # drop_tables(engine=user_engine)  # TODO: remember it
     create_tables(engine=user_engine)
-    sample_data(engine=user_engine)
+    # sample_data(engine=user_engine)
     # teardown_db(config)
 
 
