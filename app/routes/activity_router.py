@@ -145,12 +145,12 @@ async def get_activity(request):
             "description": activity.description,
             "user_id": activity.user_fk,
             "type": {
-                    "id": type_.id,
-                    "name": type_.name,
-                    "recent_loc_count": type_.recent_loc_count,
-                    "image_url": type_.image_url,
-                    "color": type_.color,
-                }
+                "id": type_.id,
+                "name": type_.name,
+                "recent_loc_count": type_.recent_loc_count,
+                "image_url": type_.image_url,
+                "color": type_.color,
+            }
         }
     )
 
@@ -257,6 +257,34 @@ async def user_activities(request):
     return aiohttp.web.json_response(response)
 
 
+async def get_all_activities(request):
+    response = []
+
+    async with request.app["db"].acquire() as conn:
+        activities = await db.get_all_activities(conn)
+        for active in activities:
+            type_ = await db.get_type(conn, active.type_fk)
+            response.append({
+                "id": active.id,
+                "name": active.name,
+                "status": active.status.name,
+                "expected_start": datetime.datetime.isoformat(
+                    active.expected_start) if active.expected_start else None,
+                "start_time": datetime.datetime.isoformat(active.start_time) if active.start_time else None,
+                "end_time": datetime.datetime.isoformat(active.end_time) if active.end_time else None,
+                "description": active.description,
+                "type": {
+                    "id": type_.id,
+                    "name": type_.name,
+                    "recent_loc_count": type_.recent_loc_count,
+                    "image_url": type_.image_url,
+                    "color": type_.color,
+                }
+            })
+
+    return aiohttp.web.json_response(response)
+
+
 def configure(app):
     router = app.router
 
@@ -270,3 +298,4 @@ def configure(app):
     router.add_route('POST', '/stopTrack', end_activity, name='end_activity')
     router.add_route('GET', '/check/{id}', check_activity, name='check_activity')
     router.add_route('GET', '/activities/{id}', user_activities, name='user_activities')
+    router.add_route('GET', '/allActivities', get_all_activities, name='all_activities')

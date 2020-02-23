@@ -46,6 +46,7 @@ activity = Table(
     Column('start_time', DateTime),
     Column('end_time', DateTime),
     Column('description', String),
+    Column('created_at', DateTime, default=datetime.datetime.now()),
 
     Column('user_fk', Integer, ForeignKey('user.id', ondelete='cascade', onupdate='cascade')),
     Column('type_fk', Integer, ForeignKey('type_.id', ondelete='restrict', onupdate='cascade')),

@@ -1,3 +1,5 @@
+from sqlalchemy import or_
+
 from app.postgres.db import *
 
 
@@ -96,3 +98,36 @@ async def get_user_activities(conn, user_id):
 
 async def add_followers(conn, user_fk, following):
     await conn.execute(followers.insert().values(user_fk=user_fk, following=following))
+
+
+async def get_user_followers(conn, user_fk):
+    res = await conn.execute(followers.select().where(followers.c.user_fk == user_fk))
+    return await res.fetchall()
+
+
+async def get_all_followers_feed(conn, ids):
+    res = await conn.execute(
+        followers.select().where(or_(followers.c.following == ids[0]), followers.c.user_fk.in_(ids))
+    )
+    return await res.fetchall()
+
+
+async def get_all_activities_feed(conn, ids):
+    res = await conn.execute(
+        activity.select().where(activity.c.user_fk.in_(ids))
+    )
+    return await res.fetchall()
+
+
+async def get_all_users(conn):
+    res = await conn.execute(
+        user.select()
+    )
+    return await res.fetchall()
+
+
+async def get_all_activities(conn):
+    res = await conn.execute(
+        activity.select()
+    )
+    return await res.fetchall()
